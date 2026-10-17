@@ -1,0 +1,61 @@
+{
+  "name": "uykomek",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "build:pages": "tsc -b && vite build --base=/-/",
+    "dev:server": "tsx watch server/index.ts",
+    "build:server": "node ops/build-server.mjs",
+    "check:server": "tsc -p tsconfig.server.json",
+    "test:server": "tsx --test server/tests/*.test.ts",
+    "pilot": "node ops/pilot.mjs",
+    "pilot:check": "node ops/preflight.mjs",
+    "pilot:logs": "docker compose logs --tail=100 app",
+    "pilot:stop": "docker compose stop",
+    "backup": "node ops/backup.mjs",
+    "restore:check": "node ops/restore-check.mjs"
+  },
+  "dependencies": {
+    "@fastify/cookie": "11.1.3",
+    "@fastify/helmet": "13.2.0",
+    "@fastify/multipart": "9.4.0",
+    "@fastify/rate-limit": "10.3.0",
+    "@fastify/static": "10.1.6",
+    "docx": "9.11.0",
+    "exceljs": "4.4.0",
+    "fastify": "5.12.7",
+    "jszip": "3.10.2",
+    "lucide-react": "0.468.0",
+    "nodemailer": "10.1.2",
+    "pg": "8.23.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "yauzl": "3.4.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/nodemailer": "7.0.12",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/yauzl": "2.10.3",
+    "esbuild": "0.28.2",
+    "tsx": "4.23.15",
+    "typescript": "5.8.3",
+    "vite": "6.4.4",
+    "vitest": "3.2.7"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "11.1.1"
+    }
+  }
+}

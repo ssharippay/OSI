@@ -1,0 +1,50 @@
+name: uykomek
+services:
+  db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: uykomek
+      POSTGRES_DB: uykomek
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run pilot or node ops/init-env.mjs first}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uykomek -d uykomek"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports: ["127.0.0.1:${HOST_PORT:-3000}:3000"]
+    environment:
+      DATABASE_URL: postgres://uykomek:${POSTGRES_PASSWORD}@db:5432/uykomek
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:3000}
+      ALLOW_INSECURE_LOCAL: ${ALLOW_INSECURE_LOCAL:-true}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-ҮйКөмек <noreply@localhost>}
+      AI_ENABLED: ${AI_ENABLED:-false}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_BASE_URL: ${AI_BASE_URL:-https://api.openai.com/v1}
+      AI_MODEL: ${AI_MODEL:-gpt-4.1-mini}
+      AI_MONTHLY_REQUEST_LIMIT: ${AI_MONTHLY_REQUEST_LIMIT:-100}
+      HOUSE_FILE_LIMIT_MB: ${HOUSE_FILE_LIMIT_MB:-500}
+      TRUST_PROXY: ${TRUST_PROXY:-}
+    volumes: ["files_data:/app/data/files"]
+    read_only: true
+    tmpfs: ["/tmp:size=128m,mode=1777"]
+  mailpit:
+    image: axllent/mailpit@sha256:23fe39e81bde596a918000b3135c0f85dc8bb4c9ea6be274b051143f3e300387
+    restart: unless-stopped
+    ports: ["127.0.0.1:8025:8025"]
+volumes:
+  postgres_data:
+  files_data:

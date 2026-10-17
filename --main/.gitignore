@@ -1,0 +1,14 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+*.log
+*.tsbuildinfo
+uykomek.zip
+uykomek-*.zip
+.env
+.env.*
+!.env.example
+build-server/
+backups/
+data/
